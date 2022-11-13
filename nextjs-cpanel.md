@@ -11,10 +11,10 @@ The given example code contains instructions you most likely need not, but works
 Make sure you have a working build; if not, create one. The default command is `npm run build`.
 
 The following files are required to run the built application:
-- `.next`: Next.js build
-- `public`: public assets
-- `package.json`: self-explanatory
-- `server.js`: entry point
+- _.next_: Next.js build
+- _public_: public assets
+- _package.json_: self-explanatory
+- _server.js_: entry point
 
 A convenient way to send all these files to your hosting provider is to gather them in an archive, for example as such: `tar cfzv release.tar.gz .next public package.json server.js`
 
