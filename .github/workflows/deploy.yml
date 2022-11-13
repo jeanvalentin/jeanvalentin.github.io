@@ -5,7 +5,7 @@ name: GitHub Pages deploy
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   build:
@@ -24,6 +24,6 @@ jobs:
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: master
+          branch: public
           folder: out
           
