@@ -66,6 +66,8 @@ echo Requesting restart...
 curl $RESTART_URL
 ```
 
+
+
 ```sh
 #!/bin/sh
 # deploy-remote.sh
@@ -111,8 +113,6 @@ rm "$0"
     <li>PROJECT_DIRECTORY: your application root path, without "current"</li></ul></li>
 <li>add the following to the "scripts" section of your package.json: `"deploy": "sh deploy.sh",`</li>
 </ul>
-
-- add the following to the "scripts" section of your package.json: `"deploy": "sh deploy.sh",`
 
 These scripts are suited for a Next.js application. However, if you do not use Next.js, tweak the first instruction (`tar cfz $RELEASE_NAME.tar.gz something something`) to fit your needs; replace _something_ with whichever files you want in the archive.
 
