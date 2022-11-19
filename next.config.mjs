@@ -1,6 +1,16 @@
 /**
 * @type {import('next').NextConfig}
 */
+import mdx from '@next/mdx';
+
+const withMdx = mdx({
+  extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [],
+    rehypePlugins: [],
+  },
+});
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -9,6 +19,7 @@ const nextConfig = {
     path: '.',
   },
   assetPrefix: './',
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
 };
 
-export default nextConfig;
+export default withMdx(nextConfig);
