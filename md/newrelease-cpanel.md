@@ -104,11 +104,13 @@ rm "$0"
 ```
 
 <ul>
-<li>create "deploy.sh" and "deploy-remote.sh" at the root of your local project, with the contents hereinabove,</li>
-<li>set the values of: <ul>
-<li>SSH_STRING: your ssh credentials,</li>
-<li>RESTART_URL: any URL of your application,</li>
-<li>PROJECT_DIRECTORY: your application root path, without "current"</li></ul></li></ul>
+  <li>create "deploy.sh" and "deploy-remote.sh" at the root of your local project, with the contents hereinabove,</li>
+  <li>set the values of: <ul>
+    <li>SSH_STRING: your ssh credentials,</li>
+    <li>RESTART_URL: any URL of your application,</li>
+    <li>PROJECT_DIRECTORY: your application root path, without "current"</li></ul></li>
+<li>add the following to the "scripts" section of your package.json: `"deploy": "sh deploy.sh",`</li>
+</ul>
 
 - add the following to the "scripts" section of your package.json: `"deploy": "sh deploy.sh",`
 
