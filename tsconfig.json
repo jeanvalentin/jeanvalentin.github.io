@@ -20,6 +20,12 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
+      "/config/*": [
+        "config/*"
+      ],
+      "/styles/*": [
+        "styles/*"
+      ],
       "/wrappers": [
         "wrappers"
       ],
