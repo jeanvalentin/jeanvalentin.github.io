@@ -20,7 +20,6 @@ const nextConfig = {
     loader: 'akamai',
     path: '.',
   },
-  assetPrefix: './',
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
 };
 
