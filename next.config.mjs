@@ -2,12 +2,14 @@
 * @type {import('next').NextConfig}
 */
 import mdx from '@next/mdx';
+import rehypeHighlight from 'rehype-highlight';
+import remarkGfm from 'remark-gfm';
 
 const withMdx = mdx({
   extension: /\.mdx?$/,
   options: {
-    remarkPlugins: [],
-    rehypePlugins: [],
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [rehypeHighlight],
   },
 });
 
