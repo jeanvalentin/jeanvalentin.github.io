@@ -4,7 +4,7 @@ And you can use SQL, too.
 
 Yes, this happens with ODBC. First, make sure ODBC is installed on your local computer. Execute `sudo apt install unixodbc unixodbc-dev`, or a variant of it depending on your package manager.
 
-_node-odbc_ is a package that enable you to use ODBC in Node. Should you choose this one, add it to your project: `npm i odbc`. Documentation here: https://www.npmjs.com/package/odbc
+_node-odbc_ is a package that enables you to use ODBC in Node. Should you choose this one, add it to your project: `npm i odbc`. Documentation here: https://www.npmjs.com/package/odbc
 
 ## Install the ODBC driver
 
