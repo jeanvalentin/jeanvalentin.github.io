@@ -1,7 +1,3 @@
-import { ArticleLayout } from '/wrappers'
-
-<ArticleLayout>
-
 And you can use SQL, too.
 
 ## Install ODBC
@@ -63,5 +59,3 @@ This script is an example, suit it to your needs. Do not hardcode your connectio
 ## More than Node.js
 
 CData has other DB2 drivers. Should you interact with your database by means other than Node, say, Python or Microsoft Excel, find them here: https://www.cdata.com/drivers/db2/download/
-
-</ArticleLayout>

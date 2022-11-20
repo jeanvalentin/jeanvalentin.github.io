@@ -1,7 +1,3 @@
-import { ArticleLayout } from '/wrappers'
-
-<ArticleLayout>
-
 ## Custom server
 
 Your application requires an explicit entry point. A Next.js custom server fits the need and is easy to implement. Follow the guide at https://nextjs.org/docs/advanced-features/custom-server. 
@@ -36,5 +32,3 @@ Define a Passenger log file if you wish so. Define environment variables if your
 Hit "Create". Your application is now set up.
 
 Hit "Run NPM Install". Navigate to your URL. Congratulations, your app is live.
-
-</ArticleLayout>
