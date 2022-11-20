@@ -1,5 +1,5 @@
 import type { AppProps } from 'next/app'
-import '/styles/github-dark-dimmed.min.css'
+import '/styles/github.min.css'
 import '/styles/globals.css'
 import { Layout } from '/wrappers'
 

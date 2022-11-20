@@ -18,7 +18,9 @@ export default function ArticleLayout({ children }: { children: ReactNode }) {
         <time dateTime={meta.date}>{meta.date}</time>
         <h1>{meta.title}</h1>
       </header>
-      {children}
+      <div className="markdown">
+        {children}
+      </div>
       <footer>
         <Link href='/'>← Back to home page</Link>
       </footer>
