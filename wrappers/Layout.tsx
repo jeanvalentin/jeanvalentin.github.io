@@ -19,7 +19,6 @@ export default function Layout({ children }: { children: ReactNode }) {
     </Head>
     <header>
       <Link href='/'>jeanvalentin.github.io</Link>
-      <hr />
     </header>
     <main>
       <Sublayout>
