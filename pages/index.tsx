@@ -1,8 +1,12 @@
+import Head from "next/head";
 import Link from "next/link";
 import { metas } from "/config/meta";
 
 export default function Home() {
   return <>
+    <Head>
+      <meta name="description" content={metas.map(v => v.title).join(', ')} />
+    </Head>
     <h1>Publications</h1>
     <table>
       <tbody>

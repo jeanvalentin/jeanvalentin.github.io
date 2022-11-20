@@ -12,6 +12,7 @@ export default function ArticleLayout({ children }: { children: ReactNode }) {
   return <>
     <Head>
       <title>{meta.title}</title>
+      <meta name="description" content={meta.title} />
     </Head>
     <article>
       <header>
