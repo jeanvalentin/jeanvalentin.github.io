@@ -18,14 +18,12 @@ export default function ArticleLayout({ children, slug }: Props) {
     </Head>
     <article>
       <header>
-        {meta.date}
+        <time dateTime={meta.date}>{meta.date}</time>
         <h1>{meta.title}</h1>
       </header>
-      <main>
-        {children}
-      </main>
+      {children}
       <footer>
-        <Link href='/'>Home page</Link>
+        <Link href='/'>← Back to home page</Link>
       </footer>
     </article>
   </>
