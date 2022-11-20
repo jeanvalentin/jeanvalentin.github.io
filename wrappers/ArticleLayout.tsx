@@ -1,15 +1,12 @@
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { ReactNode } from "react";
-import { getMetaBySlug } from "/config/meta";
+import { getMetaByPath } from "/config/meta";
 
-type Props = {
-  children: ReactNode,
-  slug: string,
-};
-
-export default function ArticleLayout({ children, slug }: Props) {
-  const meta = getMetaBySlug(slug);
+export default function ArticleLayout({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  const meta = getMetaByPath(router.asPath);
   if (!meta) return null;
 
   return <>
