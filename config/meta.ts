@@ -20,6 +20,11 @@ export const metas: Meta[] = [
     title: `Connect to a DB2 instance with Node.js`,
     date: '2022-11-20',
   },
+  {
+    path: '/mdx/windows-package-manager',
+    title: `Package managers: bringing the best of Linux to Windows`,
+    date: '2022-11-26',
+  },
 ];
 
 export const getMetaByPath = (path: string) => metas.find(v => v.path === path);
