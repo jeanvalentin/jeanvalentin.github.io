@@ -23,6 +23,9 @@
       "/config/*": [
         "config/*"
       ],
+      "/public/*": [
+        "public/*"
+      ],
       "/styles/*": [
         "styles/*"
       ],
