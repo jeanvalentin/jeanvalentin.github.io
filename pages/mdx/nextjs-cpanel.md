@@ -32,3 +32,9 @@ Define a Passenger log file if you wish so. Define environment variables if your
 Hit "Create". Your application is now set up.
 
 Hit "Run NPM Install". Navigate to your URL. Congratulations, your app is live.
+
+## "Drawbacks"
+
+You now have a custom server. As mentioned in the Next.js documentation linked earlier, it has a few drawbacks, one of them being that you cannot deploy your application on Vercel. But wait, this does not matter at all. You are reading these lines because you are deploying your application on a cPanel provider anyway, i.e., not on Vercel. You will also pass on edge functions and automatic static optimization, at least those provided by Vercel. But again, you are using cPanel, so you know that already.
+
+Now the good news. "Custom server" means "you can do whatever you want with your server", something that would be off limits had you deployed your app on Vercel, so go all in. Add middleware, set custom routes, use RabbitMQ, replace all the API, you name it. Yes, you read that right, your regional €5 web hoster provides more flexibility than Vercel, so take advantage of it. Terms and conditions apply, probably.
