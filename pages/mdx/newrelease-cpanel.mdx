@@ -43,7 +43,7 @@ Your application must live in a subdirectory named _current_. For example, if yo
 
 ## There has to be a quicker way
 
-Scripts.
+Script.
 
 ```sh
 #!/bin/sh
@@ -51,61 +51,40 @@ Scripts.
 
 SSH_STRING=
 RESTART_URL=
+PROJECT_DIRECTORY=
 
 RELEASE_NAME=release_$(date +%Y%m%d_%H%M%S)
 
 echo Creating archive...
 tar cfz $RELEASE_NAME.tar.gz .next public package.json server.js
 echo Sending files...
-scp $RELEASE_NAME.tar.gz $SSH_STRING:/tmp
-scp deploy-remote.sh $SSH_STRING:/tmp
+scp $RELEASE_NAME.tar.gz $SSH_STRING:$PROJECT_DIRECTORY
 rm $RELEASE_NAME.tar.gz
-ssh $SSH_STRING "sh /tmp/deploy-remote.sh $RELEASE_NAME"
-echo Requesting restart...
-curl $RESTART_URL
-```
 
-
-
-```sh
-#!/bin/sh
-# deploy-remote.sh
-
-PROJECT_DIRECTORY=
-
-BACKUP=backup_$(date +%Y%m%d_%H%M%S)
-PWD=$(pwd)
-
-if [ -z "$1" ]; then
-  echo Release archive name required.
-  exit 1
-fi
-
-if [ ! -f /tmp/"$1".tar.gz ]; then
-  echo Release archive /tmp/"$1".tar.gz does not exist.
-  exit 2
-fi
-
+ssh $SSH_STRING <<EOF
 echo Creating backup...
 cd $PROJECT_DIRECTORY
-tar cfz $BACKUP.tar.gz current
+tar cfz backup_$(date +%Y%m%d_%H%M%S).tar.gz current
 rm -rf current
 echo Creating release...
 mkdir current
-tar xfz /tmp/"$1".tar.gz -C current
-rm /tmp/"$1".tar.gz
+tar xfz $RELEASE_NAME.tar.gz -C current
+rm $RELEASE_NAME.tar.gz
 cd current
 source ~/nodevenv/$PROJECT_DIRECTORY/current/16/bin/activate
 echo Installing dependencies...
 npm install
 mkdir tmp
 touch tmp/restart.txt
-cd $PWD
-rm "$0"
+EOF
+
+echo Requesting restart...
+curl $RESTART_URL
+
 ```
 
 <ul>
-  <li>create "deploy.sh" and "deploy-remote.sh" at the root of your local project, with the contents hereinabove,</li>
+  <li>create "deploy.sh" at the root of your local project, with the contents hereinabove,</li>
   <li>set the values of: <ul>
     <li>SSH_STRING: your ssh credentials,</li>
     <li>RESTART_URL: any URL of your application,</li>
@@ -113,14 +92,14 @@ rm "$0"
 <li>add the following to the "scripts" section of your package.json: `"deploy": "sh deploy.sh",`</li>
 </ul>
 
-These scripts are suited for a Next.js application. However, if you do not use Next.js, tweak the first instruction (`tar cfz $RELEASE_NAME.tar.gz something something`) to fit your needs; replace _something_ with whichever files you want in the archive.
+This script is suited for a Next.js application. However, if you do not use Next.js, tweak the release archive instruction (`tar cfz $RELEASE_NAME.tar.gz something something`) to fit your needs; replace _something_ with whichever files you want in the archive.
 
-Note: you could `chmod +x` the scripts; they have the shebang, so they should be executable. While it will definitely work on your computer, it might not be permitted by your cPanel provider. Either way, running them with `sh` works, so just do that.
+Yes, you can `chmod +x` the script if you want.
 
 
 ## Walkthrough, automated
 
-Once the scripts are set up, all you need to do is:
+Once the script is set up, all you need to do is:
 
 - `npm run build`
 - `npm run deploy`
@@ -130,7 +109,7 @@ Congratulations, your app is live and up to date.
 
 ## Rollback
 
-These scripts create a backup upon each release. Should you need to rollback to a previous version, navigate to your project directory, then:
+This script creates a backup upon each release. Should you need to rollback to a previous version, navigate to your project directory, then:
 - remove _current_ or rename it to something else,
 - pick a backup, and execute `tar xfzv backup_name.tar.gz`,
 - run `npm install` if need be,
