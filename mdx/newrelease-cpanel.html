@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width"/><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/><link rel="manifest" href="/site.webmanifest"/><title>Release a new version of a JavaScript application to cPanel</title><meta name="description" content="Release a new version of a JavaScript application to cPanel"/><meta name="next-head-count" content="8"/><link rel="preload" href="/_next/static/css/3cca8962bb597885.css" as="style"/><link rel="stylesheet" href="/_next/static/css/3cca8962bb597885.css" data-n-g=""/><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script><script src="/_next/static/chunks/webpack-2369ea09e775031e.js" defer=""></script><script src="/_next/static/chunks/framework-ffee79c6390da51e.js" defer=""></script><script src="/_next/static/chunks/main-10e5126e293698aa.js" defer=""></script><script src="/_next/static/chunks/pages/_app-ebdfabf9e581d591.js" defer=""></script><script src="/_next/static/chunks/pages/mdx/newrelease-cpanel-ab08e7d86061b990.js" defer=""></script><script src="/_next/static/Hpr23W4szOq6GVSdv-Aru/_buildManifest.js" defer=""></script><script src="/_next/static/Hpr23W4szOq6GVSdv-Aru/_ssgManifest.js" defer=""></script></head><body><div id="__next"><header><a href="/">jeanvalentin.github.io</a></header><main><article><header><time dateTime="2022-11-13">2022-11-13</time><h1>Release a new version of a JavaScript application to cPanel</h1></header><div class="markdown"><h2>A few things you should know first</h2>
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width"/><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/><link rel="manifest" href="/site.webmanifest"/><title>Release a new version of a JavaScript application to cPanel</title><meta name="description" content="Release a new version of a JavaScript application to cPanel"/><meta name="next-head-count" content="8"/><link rel="preload" href="/_next/static/css/3cca8962bb597885.css" as="style"/><link rel="stylesheet" href="/_next/static/css/3cca8962bb597885.css" data-n-g=""/><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script><script src="/_next/static/chunks/webpack-2369ea09e775031e.js" defer=""></script><script src="/_next/static/chunks/framework-ffee79c6390da51e.js" defer=""></script><script src="/_next/static/chunks/main-10e5126e293698aa.js" defer=""></script><script src="/_next/static/chunks/pages/_app-ebdfabf9e581d591.js" defer=""></script><script src="/_next/static/chunks/pages/mdx/newrelease-cpanel-025d02160775794d.js" defer=""></script><script src="/_next/static/ChCr9dgKbSQCCsZCsU4_0/_buildManifest.js" defer=""></script><script src="/_next/static/ChCr9dgKbSQCCsZCsU4_0/_ssgManifest.js" defer=""></script></head><body><div id="__next"><header><a href="/">jeanvalentin.github.io</a></header><main><article><header><time dateTime="2022-11-13">2022-11-13</time><h1>Release a new version of a JavaScript application to cPanel</h1></header><div class="markdown"><h2>A few things you should know first</h2>
 <p>but are not required to, so <a href="#prerequisites">skip this part</a> if you feel like it; nobody will judge you.</p>
 <p>This article assumes you are using cPanel and Phusion Passenger with CloudLinux. Otherwise, YMMV.</p>
 <h3>Setup Node.js App</h3>
@@ -28,81 +28,64 @@
 <li>send any request to your application to trigger the restart.</li>
 </ul>
 <h2>There has to be a quicker way</h2>
-<p>Scripts.</p>
+<p>Script.</p>
 <pre><code class="hljs language-sh"><span class="hljs-meta">#!/bin/sh</span>
 <span class="hljs-comment"># deploy.sh</span>
 
 SSH_STRING=
 RESTART_URL=
+PROJECT_DIRECTORY=
 
 RELEASE_NAME=release_$(<span class="hljs-built_in">date</span> +%Y%m%d_%H%M%S)
 
 <span class="hljs-built_in">echo</span> Creating archive...
 tar cfz <span class="hljs-variable">$RELEASE_NAME</span>.tar.gz .next public package.json server.js
 <span class="hljs-built_in">echo</span> Sending files...
-scp <span class="hljs-variable">$RELEASE_NAME</span>.tar.gz <span class="hljs-variable">$SSH_STRING</span>:/tmp
-scp deploy-remote.sh <span class="hljs-variable">$SSH_STRING</span>:/tmp
+scp <span class="hljs-variable">$RELEASE_NAME</span>.tar.gz <span class="hljs-variable">$SSH_STRING</span>:<span class="hljs-variable">$PROJECT_DIRECTORY</span>
 <span class="hljs-built_in">rm</span> <span class="hljs-variable">$RELEASE_NAME</span>.tar.gz
-ssh <span class="hljs-variable">$SSH_STRING</span> <span class="hljs-string">&quot;sh /tmp/deploy-remote.sh <span class="hljs-variable">$RELEASE_NAME</span>&quot;</span>
+
+ssh <span class="hljs-variable">$SSH_STRING</span> &lt;&lt;<span class="hljs-string">EOF
+echo Creating backup...
+cd $PROJECT_DIRECTORY
+tar cfz backup_$(date +%Y%m%d_%H%M%S).tar.gz current
+rm -rf current
+echo Creating release...
+mkdir current
+tar xfz $RELEASE_NAME.tar.gz -C current
+rm $RELEASE_NAME.tar.gz
+cd current
+source ~/nodevenv/$PROJECT_DIRECTORY/current/16/bin/activate
+echo Installing dependencies...
+npm install
+mkdir tmp
+touch tmp/restart.txt
+EOF</span>
+
 <span class="hljs-built_in">echo</span> Requesting restart...
 curl <span class="hljs-variable">$RESTART_URL</span>
+
 </code></pre>
-<pre><code class="hljs language-sh"><span class="hljs-meta">#!/bin/sh</span>
-<span class="hljs-comment"># deploy-remote.sh</span>
-
-PROJECT_DIRECTORY=
-
-BACKUP=backup_$(<span class="hljs-built_in">date</span> +%Y%m%d_%H%M%S)
-PWD=$(<span class="hljs-built_in">pwd</span>)
-
-<span class="hljs-keyword">if</span> [ -z <span class="hljs-string">&quot;<span class="hljs-variable">$1</span>&quot;</span> ]; <span class="hljs-keyword">then</span>
-  <span class="hljs-built_in">echo</span> Release archive name required.
-  <span class="hljs-built_in">exit</span> 1
-<span class="hljs-keyword">fi</span>
-
-<span class="hljs-keyword">if</span> [ ! -f /tmp/<span class="hljs-string">&quot;<span class="hljs-variable">$1</span>&quot;</span>.tar.gz ]; <span class="hljs-keyword">then</span>
-  <span class="hljs-built_in">echo</span> Release archive /tmp/<span class="hljs-string">&quot;<span class="hljs-variable">$1</span>&quot;</span>.tar.gz does not exist.
-  <span class="hljs-built_in">exit</span> 2
-<span class="hljs-keyword">fi</span>
-
-<span class="hljs-built_in">echo</span> Creating backup...
-<span class="hljs-built_in">cd</span> <span class="hljs-variable">$PROJECT_DIRECTORY</span>
-tar cfz <span class="hljs-variable">$BACKUP</span>.tar.gz current
-<span class="hljs-built_in">rm</span> -rf current
-<span class="hljs-built_in">echo</span> Creating release...
-<span class="hljs-built_in">mkdir</span> current
-tar xfz /tmp/<span class="hljs-string">&quot;<span class="hljs-variable">$1</span>&quot;</span>.tar.gz -C current
-<span class="hljs-built_in">rm</span> /tmp/<span class="hljs-string">&quot;<span class="hljs-variable">$1</span>&quot;</span>.tar.gz
-<span class="hljs-built_in">cd</span> current
-<span class="hljs-built_in">source</span> ~/nodevenv/<span class="hljs-variable">$PROJECT_DIRECTORY</span>/current/16/bin/activate
-<span class="hljs-built_in">echo</span> Installing dependencies...
-npm install
-<span class="hljs-built_in">mkdir</span> tmp
-<span class="hljs-built_in">touch</span> tmp/restart.txt
-<span class="hljs-built_in">cd</span> <span class="hljs-variable">$PWD</span>
-<span class="hljs-built_in">rm</span> <span class="hljs-string">&quot;<span class="hljs-variable">$0</span>&quot;</span>
-</code></pre>
-<ul><li>create &quot;deploy.sh&quot; and &quot;deploy-remote.sh&quot; at the root of your local project, with the contents hereinabove,</li>
+<ul><li>create &quot;deploy.sh&quot; at the root of your local project, with the contents hereinabove,</li>
 <li>set the values of: <ul>
 <li>SSH_STRING: your ssh credentials,</li>
 <li>RESTART_URL: any URL of your application,</li>
 <li>PROJECT_DIRECTORY: your application root path, without &quot;current&quot;</li></ul></li>
 <li>add the following to the &quot;scripts&quot; section of your package.json: <code>&quot;deploy&quot;: &quot;sh deploy.sh&quot;,</code></li></ul>
-<p>These scripts are suited for a Next.js application. However, if you do not use Next.js, tweak the first instruction (<code>tar cfz $RELEASE_NAME.tar.gz something something</code>) to fit your needs; replace <em>something</em> with whichever files you want in the archive.</p>
-<p>Note: you could <code>chmod +x</code> the scripts; they have the shebang, so they should be executable. While it will definitely work on your computer, it might not be permitted by your cPanel provider. Either way, running them with <code>sh</code> works, so just do that.</p>
+<p>This script is suited for a Next.js application. However, if you do not use Next.js, tweak the release archive instruction (<code>tar cfz $RELEASE_NAME.tar.gz something something</code>) to fit your needs; replace <em>something</em> with whichever files you want in the archive.</p>
+<p>Yes, you can <code>chmod +x</code> the script if you want.</p>
 <h2>Walkthrough, automated</h2>
-<p>Once the scripts are set up, all you need to do is:</p>
+<p>Once the script is set up, all you need to do is:</p>
 <ul>
 <li><code>npm run build</code></li>
 <li><code>npm run deploy</code></li>
 </ul>
 <p>Congratulations, your app is live and up to date.</p>
 <h2>Rollback</h2>
-<p>These scripts create a backup upon each release. Should you need to rollback to a previous version, navigate to your project directory, then:</p>
+<p>This script creates a backup upon each release. Should you need to rollback to a previous version, navigate to your project directory, then:</p>
 <ul>
 <li>remove <em>current</em> or rename it to something else,</li>
 <li>pick a backup, and execute <code>tar xfzv backup_name.tar.gz</code>,</li>
 <li>run <code>npm install</code> if need be,</li>
 <li>send any request to your application to trigger the restart.</li>
 </ul>
-<p>Backups take space; you may want to visit your remote project directory every once in a while to delete some of the older backups.</p></div><footer style="display:flex"><a href="/">← Back to home page</a><span style="flex:auto"></span><a rel="license noreferrer noopener" target="_blank" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" src="/_next/static/media/ccby.78039665.png" width="88" height="31" decoding="async" data-nimg="1" loading="lazy" style="color:transparent"/></a></footer></article></main><footer></footer></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{}},"page":"/mdx/newrelease-cpanel","query":{},"buildId":"Hpr23W4szOq6GVSdv-Aru","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}</script></body></html>
+<p>Backups take space; you may want to visit your remote project directory every once in a while to delete some of the older backups.</p></div><footer style="display:flex"><a href="/">← Back to home page</a><span style="flex:auto"></span><a rel="license noreferrer noopener" target="_blank" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" src="/_next/static/media/ccby.78039665.png" width="88" height="31" decoding="async" data-nimg="1" loading="lazy" style="color:transparent"/></a></footer></article></main><footer></footer></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{}},"page":"/mdx/newrelease-cpanel","query":{},"buildId":"ChCr9dgKbSQCCsZCsU4_0","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}</script></body></html>
