@@ -1,16 +1,23 @@
+---
+tags: publication
+layout: articlelayout.liquid
+title: Connect to a DB2 instance with Node.js
+date: "2022-11-20"
+---
+
 And you can use SQL, too.
 
 ## Install ODBC
 
 Yes, this happens with ODBC. First, make sure ODBC is installed on your local computer. Execute `sudo apt install unixodbc unixodbc-dev`, or a variant of it depending on your package manager.
 
-_node-odbc_ is a package that enables you to use ODBC in Node. Should you choose this one, add it to your project: `npm i odbc`. Documentation here: https://www.npmjs.com/package/odbc
+_node-odbc_ is a package that enables you to use ODBC in Node. Should you choose this one, add it to your project: `npm i odbc`. Documentation here: [https://www.npmjs.com/package/odbc](https://www.npmjs.com/package/odbc)
 
 ## Install the ODBC driver
 
 IBM provides plenty of drivers for their databases. They are extremely expensive, that is, if you manage to unearth them from their website in the first place. The good news is, CData also has drivers for a plethora of stuff, DB2 being one of them. At the time of writing, the drivers are in beta; however they work just fine, and CData provides them free of charge.
 
-Find the Unix ODBC driver for DB2 here: https://www.cdata.com/drivers/db2/download/odbc/#unix
+Find the Unix ODBC driver for DB2 here: [https://www.cdata.com/drivers/db2/download/odbc/#unix](https://www.cdata.com/drivers/db2/download/odbc/#unix)
 
 Save it anywhere locally, for example in _/tmp_. Then install it; on a Debian-based distribution, you may use the following command: `sudo dpkg -i IBMDB2ODBCDriverforUnix.deb`
 
@@ -50,7 +57,7 @@ const result2 = await db2.query(`UPDATE PRODUCT SET PRICE = 7 WHERE PRODUCTID = 
 
 The queries return JSON results.
 
-Use the DB2 dialect of SQL to query your database. DB2 instructions may differ from MariaDB/MySQL or Postgres. An example found above is `FETCH FIRST 6 ROWS ONLY`, although `LIMIT` and `OFFSET` can be used for the same result. More on this here: https://www.db2tutorial.com/
+Use the DB2 dialect of SQL to query your database. DB2 instructions may differ from MariaDB/MySQL or Postgres. An example found above is `FETCH FIRST 6 ROWS ONLY`, although `LIMIT` and `OFFSET` can be used for the same result. More on this here: [https://www.db2tutorial.com/](https://www.db2tutorial.com/)
 
 Notice the above use of `SELECT PRODUCTID AS PRODUCTID`. Depending on your database specifications, there may be different possible names for a column, and as a consequence the returned column name may not be the one you specified in the query. While it seems tautological, _columnname_ AS _columnname_ ensures the name returned is the name queried.
 
@@ -58,4 +65,4 @@ This script is an example, suit it to your needs. Do not hardcode your connectio
 
 ## More than Node.js
 
-CData has other DB2 drivers. Should you interact with your database by means other than Node, say, Python or Microsoft Excel, find them here: https://www.cdata.com/drivers/db2/download/
+CData has other DB2 drivers. Should you interact with your database by means other than Node, say, Python or Microsoft Excel, find them here: [https://www.cdata.com/drivers/db2/download/](https://www.cdata.com/drivers/db2/download/)

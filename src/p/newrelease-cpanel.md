@@ -1,3 +1,10 @@
+---
+tags: publication
+layout: articlelayout.liquid
+title: Release a new version of a JavaScript application to cPanel
+date: "2022-11-13"
+---
+
 ## A few things you should know first
 
 but are not required to, so [skip this part](#prerequisites) if you feel like it; nobody will judge you.
@@ -10,7 +17,7 @@ Upon creating an application with cPanel's Setup Node.js App tool, you have to p
 
 If your application URL is _example.com_, then a directory named _example.com_ will be created. It contains, among other things, a _.htaccess_ with Passenger configuration and environment variables.
 
-If your application root is _myapp_, then that is where your files live, and you have two directories. If your application root happens to also be _example.com_, then so be it, you have only one directory. If your application root is _example.com/current_, then fine, it is a subdirectory of your application URL directory. Either way, your application is accessible at _http://example.com_.
+If your application root is _myapp_, then that is where your files live, and you have two directories. If your application root happens to also be _example.com_, then so be it, you have only one directory. If your application root is _example.com/current_, then fine, it is a subdirectory of your application URL directory. Either way, your application is accessible at _[http://example.com](http://example.com)_.
 
 ### npm install
 
@@ -22,13 +29,14 @@ If you are wondering, the path follows this pattern: `/home/USERNAME/nodevenv/AP
 
 ### restart.txt
 
-Your application root contains a directory named _tmp_, with an empty file called _restart.txt_. If you touch this file, it tells Phusion Passenger to restart the application. It does not restart the application right away, but does so as soon as a request arrives. As a consequence, the next person to use your application will experience a stall, during which the application is actually restarted, before their request is fulfilled. This behaviour is documented here: https://www.phusionpassenger.com/docs/advanced_guides/troubleshooting/apache/restart_app.html
+Your application root contains a directory named _tmp_, with an empty file called _restart.txt_. If you touch this file, it tells Phusion Passenger to restart the application. It does not restart the application right away, but does so as soon as a request arrives. As a consequence, the next person to use your application will experience a stall, during which the application is actually restarted, before their request is fulfilled. This behaviour is documented here: [https://www.phusionpassenger.com/docs/advanced_guides/troubleshooting/apache/restart_app.html](https://www.phusionpassenger.com/docs/advanced_guides/troubleshooting/apache/restart_app.html)
 
 Therefore, you may want to trigger a restart of your own. You can achieve this via cPanel's Setup Node.js App tool, by hitting Restart. Or, via ssh, you may proceed as such:
 - `touch APPLICATION_ROOT/tmp/restart.txt`
 - query your application, for example by executing `curl example.com/api/status`.
 
 <span id='prerequisites'/>
+
 ## Prerequisites
 
 Your application must live in a subdirectory named _current_. For example, if your application URL is _example.com_, you shall set your application root to _example.com/current_, or _myapp/current_, or anything you want with a subdirectory named _current_. As its name implies, this directory contains the release that is currently live.
@@ -83,14 +91,13 @@ curl $RESTART_URL
 
 ```
 
-<ul>
-  <li>create "deploy.sh" at the root of your local project, with the contents hereinabove,</li>
-  <li>set the values of: <ul>
+
+- create "deploy.sh" at the root of your local project, with the contents hereinabove,
+- set the values of: <ul>
     <li>SSH_STRING: your ssh credentials,</li>
     <li>RESTART_URL: any URL of your application,</li>
-    <li>PROJECT_DIRECTORY: your application root path, without "current"</li></ul></li>
-<li>add the following to the "scripts" section of your package.json: `"deploy": "sh deploy.sh",`</li>
-</ul>
+    <li>PROJECT_DIRECTORY: your application root path, without "current"</li></ul>
+- add the following to the "scripts" section of your package.json: `"deploy": "sh deploy.sh",`
 
 This script is suited for a Next.js application. However, if you do not use Next.js, tweak the release archive instruction (`tar cfz $RELEASE_NAME.tar.gz something something`) to fit your needs; replace _something_ with whichever files you want in the archive.
 

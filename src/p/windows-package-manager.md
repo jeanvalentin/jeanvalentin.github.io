@@ -1,3 +1,10 @@
+---
+tags: publication
+layout: articlelayout.liquid
+title: "Package managers: bringing the best of Linux to Windows"
+date: "2022-11-26"
+---
+
 You want to install a new program to Windows. What do you do? Simple, really.
 
 Input the name of the application in a search engine, pick the right link among all the advertisements and fake websites, find your way through the site of the program supplier to locate the downloads page, find the download for the right version, your OS, and your processor architecture, find the real link among the advertisements that look like download buttons, download the file, launch the installer, go through all the menus, opt out of the extra bloatware, click Finish, and here you go, the program is installed. Could not be more simple.
@@ -36,7 +43,7 @@ And if you think it does the same things apt does, but on Windows, then in most 
 
 ## Get started with Chocolatey
 
-This is the last program you will ever need to manually fetch with your web browser. Even better news: you do not even have to download an executable installer. Follow the directions here: https://chocolatey.org/install
+This is the last program you will ever need to manually fetch with your web browser. Even better news: you do not even have to download an executable installer. Follow the directions here: [https://chocolatey.org/install](https://chocolatey.org/install)
 
 TL;DR: open a PowerShell admin console and paste the following:
 
@@ -68,7 +75,7 @@ Have a nice user interface instead of the console?
 
 Anything else?
 
-https://docs.chocolatey.org/en-us/choco/commands/
+[https://docs.chocolatey.org/en-us/choco/commands/](https://docs.chocolatey.org/en-us/choco/commands/)
 
 But wait, is it really that simple?
 

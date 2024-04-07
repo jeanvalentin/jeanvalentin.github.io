@@ -1,0 +1,20 @@
+---
+layout: layout.liquid
+title: Home page
+---
+
+<h1>Publications</h1>
+<table>
+  <tbody>
+    {% for publication in collections.publication reversed %}
+    <tr>
+      <td><strong>
+          {{ publication.data.date }}
+        </strong></td>
+      <td><a href="{{ publication.url }}">
+          {{ publication.data.title }}
+        </a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

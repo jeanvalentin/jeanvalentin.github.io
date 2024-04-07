@@ -1,6 +1,13 @@
+---
+tags: publication
+layout: articlelayout.liquid
+title: Deploy a Next.js app to cPanel
+date: "2022-11-11"
+---
+
 ## Custom server
 
-Your application requires an explicit entry point. A Next.js custom server fits the need and is easy to implement. Follow the guide at https://nextjs.org/docs/advanced-features/custom-server. 
+Your application requires an explicit entry point. A Next.js custom server fits the need and is easy to implement. Follow the guide at [https://nextjs.org/docs/advanced-features/custom-server](https://nextjs.org/docs/advanced-features/custom-server). 
 
 The given example code contains instructions you most likely need not, but works as is and can be copied and pasted without modification.
 

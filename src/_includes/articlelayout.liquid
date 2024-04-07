@@ -1,0 +1,21 @@
+---
+layout: layout.liquid
+---
+
+<article>
+  <header>
+    <time dateTime="{{ date }}">{{ date }}</time>
+    <h1>
+      {{ title }}
+    </h1>
+  </header>
+  <div class="markdown">
+    {{ content }}
+  </div>
+  <footer style="display: flex; justify-content: space-between;">
+    <a href='/'>← Back to home page</a>
+    <a rel="license noreferrer noopener" href="http://creativecommons.org/licenses/by/4.0/" target="_blank">
+      <img src="/ccby.png" alt="Creative Commons License" />
+    </a>
+  </footer>
+</article>
