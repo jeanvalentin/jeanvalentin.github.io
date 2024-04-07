@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+    Package managers: bringing the best of Linux to Windows
+  </title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description"
+    content="Jean Valentin's articles about JavaScript, Node.js, Next.js, and other IT-related topics" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="stylesheet" href="/styles/globals.css" />
+  <link rel="stylesheet" href="/styles/github.min.css" />
+</head>
+<header>
+  <a href='/'>jeanvalentin.github.io</a>
+</header>
+<main>
+  
+<article>
+  <header>
+    <time dateTime="2022-11-26">2022-11-26</time>
+    <h1>
+      Package managers: bringing the best of Linux to Windows
+    </h1>
+  </header>
+  <div class="markdown">
+    <p>You want to install a new program to Windows. What do you do? Simple, really.</p>
+<p>Input the name of the application in a search engine, pick the right link among all the advertisements and fake websites, find your way through the site of the program supplier to locate the downloads page, find the download for the right version, your OS, and your processor architecture, find the real link among the advertisements that look like download buttons, download the file, launch the installer, go through all the menus, opt out of the extra bloatware, click Finish, and here you go, the program is installed. Could not be more simple.</p>
+<p>Then, updating the program is even easier.</p>
+<p>Just wait until the program notifies you that an update is available, download the update by some way that may vary between applications, launch the updater, go through all the menus, remember to opt out of the extra bloatware again, click Finish, and here you go, fresh version. Easy, really. Then just do that for all your programs. If the program never notifies for updates, then you can go to their website again, or never update, your choice.</p>
+<p>What if you need to uninstall a program?</p>
+<p>Find the uninstaller, it must be somewhere in the start menu. If not, there should be one in the installation directory, which is probably in Program Files, or maybe in Program Files (x86), or maybe in AppData, or maybe elsewhere. Then launch the uninstaller, go through all the menus, fill the survey asking you why you are uninstalling and telling you you should reconsider, close the browser popups, and there you go, your program is gone, save for some random files here and there that the uninstaller could not be bothered to remove, and will just live forever on your storage drive. Also, something something stale registry entries, whatever, who cares. True convenience! If there is no uninstaller, fear not: you can always try your luck in Add or remove programs, or resign and ignore the program for the rest of your life.</p>
+<p>To make it clear, just in case: everything above this line is sarcasm. Managing software this way is a horrible, humiliating experience that will leave your soul scathed and your computer bloated.</p>
+<h2>Enter package managers</h2>
+<p>Install a package on any Debian-based Linux distribution:</p>
+<p><code>sudo apt install package_name</code></p>
+<p>Update all packages:</p>
+<p><code>sudo apt update &#x26;&#x26; sudo apt upgrade -y</code></p>
+<p>Remove a package:</p>
+<p><code>sudo apt remove package_name</code></p>
+<h2>Come on, Windows</h2>
+<p>Software management on Linux is simple; software management on Windows is a never-ending pilgrimage. All major Linux distributions got that right, but Windows did not? Why? Microsoft could not come up with a package manager of their own<sup>1</sup>, so someone else did and bestowed upon forsaken Windows users Chocolatey.</p>
+<p>And if you think it does the same things apt does, but on Windows, then in most cases, you are right.</p>
+<p><sup>1. Actually, Windows has a package manager; more on that later.</sup></p>
+<h2>Get started with Chocolatey</h2>
+<p>This is the last program you will ever need to manually fetch with your web browser. Even better news: you do not even have to download an executable installer. Follow the directions here: <a href="https://chocolatey.org/install">https://chocolatey.org/install</a></p>
+<p>TL;DR: open a PowerShell admin console and paste the following:</p>
+<pre><code>Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+</code></pre>
+<p>Done. You now have a package manager. Next time you need to manage software, do not open a web browser. Open a PowerShell admin console.</p>
+<p>Find a package?</p>
+<p><code>choco search package_name</code></p>
+<p>Install a package?</p>
+<p><code>choco install package_name</code></p>
+<p>Update all packages?</p>
+<p><code>choco upgrade all -y</code></p>
+<p>Uninstall a package?</p>
+<p><code>choco uninstall package_name</code></p>
+<p>Have a nice user interface instead of the console?</p>
+<p><code>choco install chocolateygui</code></p>
+<p>Anything else?</p>
+<p><a href="https://docs.chocolatey.org/en-us/choco/commands/">https://docs.chocolatey.org/en-us/choco/commands/</a></p>
+<p>But wait, is it really that simple?</p>
+<p>Yes, yes it is.</p>
+<h2>Provisioning with Chocolatey</h2>
+<p>You have a fresh Windows install, and now you have to add plenty of software.</p>
+<p>There was a joke, back in the days: "Do you know the only thing Internet Explorer is good at? Downloading Firefox."</p>
+<p>The days are over, mostly because Internet Explorer is extinct, but also, you know, everything you just read. Now open Edge and go find that Chocolatey install string to paste into your PowerShell admin console. Then close Edge forever and use Chocolatey to install Firefox, and also to install everything else.</p>
+<p>Of course you can batch install. Here is an example:</p>
+<pre><code>choco install 7zip firefox git keepass libreoffice-still nmap rufus smplayer vscode winscp
+</code></pre>
+<p>Make your own provisioning by customizing the package names in the command, then save it to a text file to reuse it later, on other machines or on your next Windows fresh install.</p>
+<h2>A word about Winget</h2>
+<p>Yes, Microsoft has its own package manager now. In fact, Winget is even included by default in Windows 11 and the later builds of Windows 10. Is it good? Yes. Is it better than Chocolatey? No.</p>
+<p>The thing is, at the time of this publication, Chocolatey's repositories are far more furnished than Winget's, which means if you are looking for an obscure package, Chocolatey will have it, but Winget will not.</p>
+<p>For now, you may be better off sticking to Chocolatey. Winget, nonetheless, is good software, a welcome addition to Windows, and worth watching. Time will tell.</p>
+  </div>
+  <footer style="display: flex; justify-content: space-between;">
+    <a href='/'>← Back to home page</a>
+    <a rel="license noreferrer noopener" href="http://creativecommons.org/licenses/by/4.0/" target="_blank">
+      <img src="/ccby.png" alt="Creative Commons License" />
+    </a>
+  </footer>
+</article>
+
+</main>
+<footer></footer>
+
+</html>

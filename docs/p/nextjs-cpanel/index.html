@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+    Deploy a Next.js app to cPanel
+  </title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description"
+    content="Jean Valentin's articles about JavaScript, Node.js, Next.js, and other IT-related topics" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="stylesheet" href="/styles/globals.css" />
+  <link rel="stylesheet" href="/styles/github.min.css" />
+</head>
+<header>
+  <a href='/'>jeanvalentin.github.io</a>
+</header>
+<main>
+  
+<article>
+  <header>
+    <time dateTime="2022-11-11">2022-11-11</time>
+    <h1>
+      Deploy a Next.js app to cPanel
+    </h1>
+  </header>
+  <div class="markdown">
+    <h2>Custom server</h2>
+<p>Your application requires an explicit entry point. A Next.js custom server fits the need and is easy to implement. Follow the guide at <a href="https://nextjs.org/docs/advanced-features/custom-server">https://nextjs.org/docs/advanced-features/custom-server</a>.</p>
+<p>The given example code contains instructions you most likely need not, but works as is and can be copied and pasted without modification.</p>
+<h2>Upload the release</h2>
+<p>Make sure you have a working build; if not, create one. The default command is <code>npm run build</code>.</p>
+<p>The following files are required to run the built application:</p>
+<ul>
+<li><em>.next</em>: Next.js build</li>
+<li><em>public</em>: public assets</li>
+<li><em>package.json</em>: self-explanatory</li>
+<li><em>server.js</em>: entry point</li>
+</ul>
+<p>A convenient way to send all these files to your hosting provider is to gather them in an archive, for example as such: <code>tar cfzv release.tar.gz .next public package.json server.js</code></p>
+<p>Upload and extract the archive to your cPanel server. If you are able to do it via ssh, then by all means. In any case, you may use cPanel's file manager, accessible from the cPanel home page. Browse to your project directory, upload the archive, extract the contents, then delete the archive.</p>
+<h2>Setup Node.js App</h2>
+<p>From the cPanel home page, navigate to Setup Node.js App. Hit the big button "Create Application", then fill the form:</p>
+<ul>
+<li>Node.js version: pick one. If you don't know, pick the  most recent.</li>
+<li>Application mode: <em>production</em></li>
+<li>Application root: path to the directory where you have just extracted your files.</li>
+<li>Application URL: choose your URL from the list; leave the text field blank unless you have to fill it.</li>
+<li>Application startup file: <em>server.js</em></li>
+</ul>
+<p>Define a Passenger log file if you wish so. Define environment variables if your app uses them.</p>
+<p>Hit "Create". Your application is now set up.</p>
+<p>Hit "Run NPM Install". Navigate to your URL. Congratulations, your app is live.</p>
+<h2>"Drawbacks"</h2>
+<p>You now have a custom server. As mentioned in the Next.js documentation linked earlier, it has a few drawbacks, one of them being that you cannot deploy your application on Vercel. But wait, this does not matter at all. You are reading these lines because you are deploying your application on a cPanel provider anyway, i.e., not on Vercel. You will also pass on edge functions and automatic static optimization, at least those provided by Vercel. But again, you are using cPanel, so you know that already.</p>
+<p>Now the good news. "Custom server" means "you can do whatever you want with your server", something that would be off limits had you deployed your app on Vercel, so go all in. Add middleware, set custom routes, use RabbitMQ, replace all the API, you name it. Yes, you read that right, your regional €5 web hoster provides more flexibility than Vercel, so take advantage of it. Terms and conditions apply, probably.</p>
+  </div>
+  <footer style="display: flex; justify-content: space-between;">
+    <a href='/'>← Back to home page</a>
+    <a rel="license noreferrer noopener" href="http://creativecommons.org/licenses/by/4.0/" target="_blank">
+      <img src="/ccby.png" alt="Creative Commons License" />
+    </a>
+  </footer>
+</article>
+
+</main>
+<footer></footer>
+
+</html>

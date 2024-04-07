@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+    Release a new version of a JavaScript application to cPanel
+  </title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description"
+    content="Jean Valentin's articles about JavaScript, Node.js, Next.js, and other IT-related topics" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="stylesheet" href="/styles/globals.css" />
+  <link rel="stylesheet" href="/styles/github.min.css" />
+</head>
+<header>
+  <a href='/'>jeanvalentin.github.io</a>
+</header>
+<main>
+  
+<article>
+  <header>
+    <time dateTime="2022-11-13">2022-11-13</time>
+    <h1>
+      Release a new version of a JavaScript application to cPanel
+    </h1>
+  </header>
+  <div class="markdown">
+    <h2>A few things you should know first</h2>
+<p>but are not required to, so <a href="#prerequisites">skip this part</a> if you feel like it; nobody will judge you.</p>
+<p>This article assumes you are using cPanel and Phusion Passenger with CloudLinux. Otherwise, YMMV.</p>
+<h3>Setup Node.js App</h3>
+<p>Upon creating an application with cPanel's Setup Node.js App tool, you have to provide an <em>Application root</em>, which is a directory, and an <em>Application URL</em>, which is an URL, but also a directory.</p>
+<p>If your application URL is <em>example.com</em>, then a directory named <em>example.com</em> will be created. It contains, among other things, a <em>.htaccess</em> with Passenger configuration and environment variables.</p>
+<p>If your application root is <em>myapp</em>, then that is where your files live, and you have two directories. If your application root happens to also be <em>example.com</em>, then so be it, you have only one directory. If your application root is <em>example.com/current</em>, then fine, it is a subdirectory of your application URL directory. Either way, your application is accessible at <em><a href="http://example.com">http://example.com</a></em>.</p>
+<h3>npm install</h3>
+<p>When you run <code>npm install</code> locally, a directory created <em>node_modules</em> is created in your application directory, and that is where the dependencies are installed. However, that is not precisely what happens when you hit that <em>Run NPM Install</em> button on cPanel. <em>node_modules</em> is indeed created, but elsewhere. What is created in your application directory is actually a symlink to that <em>node_modules</em>.</p>
+<p>Moreover, if said symlink is not present, everything works just fine. Phusion Passenger knows the location of the actual node_modules, and works with it.</p>
+<p>If you are wondering, the path follows this pattern: <code>/home/USERNAME/nodevenv/APPLICATION_ROOT/NODE_VERSION/lib/node_modules</code>. An actual path, where the application root is <em>example.com/current</em> and the node version is 16, may be <code>~/nodevenv/myapp/current/16/lib/node_modules</code>. Your npm dependencies are there. They are reused between releases, which means any subsequent run of <code>npm install</code> takes much less time as if it were to install all the dependencies from scratch.</p>
+<h3>restart.txt</h3>
+<p>Your application root contains a directory named <em>tmp</em>, with an empty file called <em>restart.txt</em>. If you touch this file, it tells Phusion Passenger to restart the application. It does not restart the application right away, but does so as soon as a request arrives. As a consequence, the next person to use your application will experience a stall, during which the application is actually restarted, before their request is fulfilled. This behaviour is documented here: <a href="https://www.phusionpassenger.com/docs/advanced_guides/troubleshooting/apache/restart_app.html">https://www.phusionpassenger.com/docs/advanced_guides/troubleshooting/apache/restart_app.html</a></p>
+<p>Therefore, you may want to trigger a restart of your own. You can achieve this via cPanel's Setup Node.js App tool, by hitting Restart. Or, via ssh, you may proceed as such:</p>
+<ul>
+<li><code>touch APPLICATION_ROOT/tmp/restart.txt</code></li>
+<li>query your application, for example by executing <code>curl example.com/api/status</code>.</li>
+</ul>
+<span id='prerequisites'/>
+<h2>Prerequisites</h2>
+<p>Your application must live in a subdirectory named <em>current</em>. For example, if your application URL is <em>example.com</em>, you shall set your application root to <em>example.com/current</em>, or <em>myapp/current</em>, or anything you want with a subdirectory named <em>current</em>. As its name implies, this directory contains the release that is currently live.</p>
+<h2>Walkthrough</h2>
+<ul>
+<li>upload the new release to your project directory,</li>
+<li>remove <em>current</em>, or keep it elsewhere if you like having the option of a rollback,</li>
+<li>rename your new release to <em>current</em>,</li>
+<li>run <code>npm install</code> if need be,</li>
+<li>send any request to your application to trigger the restart.</li>
+</ul>
+<h2>There has to be a quicker way</h2>
+<p>Script.</p>
+<pre><code class="hljs language-sh"><span class="hljs-meta">#!/bin/sh</span>
+<span class="hljs-comment"># deploy.sh</span>
+
+SSH_STRING=
+RESTART_URL=
+PROJECT_DIRECTORY=
+
+RELEASE_NAME=release_$(<span class="hljs-built_in">date</span> +%Y%m%d_%H%M%S)
+
+<span class="hljs-built_in">echo</span> Creating archive...
+tar cfz <span class="hljs-variable">$RELEASE_NAME</span>.tar.gz .next public package.json server.js
+<span class="hljs-built_in">echo</span> Sending files...
+scp <span class="hljs-variable">$RELEASE_NAME</span>.tar.gz <span class="hljs-variable">$SSH_STRING</span>:<span class="hljs-variable">$PROJECT_DIRECTORY</span>
+<span class="hljs-built_in">rm</span> <span class="hljs-variable">$RELEASE_NAME</span>.tar.gz
+
+ssh <span class="hljs-variable">$SSH_STRING</span> &#x3C;&#x3C;<span class="hljs-string">EOF
+echo Creating backup...
+cd $PROJECT_DIRECTORY
+tar cfz backup_$(date +%Y%m%d_%H%M%S).tar.gz current
+rm -rf current
+echo Creating release...
+mkdir current
+tar xfz $RELEASE_NAME.tar.gz -C current
+rm $RELEASE_NAME.tar.gz
+cd current
+source ~/nodevenv/$PROJECT_DIRECTORY/current/16/bin/activate
+echo Installing dependencies...
+npm install
+mkdir tmp
+touch tmp/restart.txt
+EOF</span>
+
+<span class="hljs-built_in">echo</span> Requesting restart...
+curl <span class="hljs-variable">$RESTART_URL</span>
+
+</code></pre>
+<ul>
+<li>create "deploy.sh" at the root of your local project, with the contents hereinabove,</li>
+<li>set the values of: <ul>
+  <li>SSH_STRING: your ssh credentials,</li>
+  <li>RESTART_URL: any URL of your application,</li>
+  <li>PROJECT_DIRECTORY: your application root path, without "current"</li></ul>
+</li>
+<li>add the following to the "scripts" section of your package.json: <code>"deploy": "sh deploy.sh",</code></li>
+</ul>
+<p>This script is suited for a Next.js application. However, if you do not use Next.js, tweak the release archive instruction (<code>tar cfz $RELEASE_NAME.tar.gz something something</code>) to fit your needs; replace <em>something</em> with whichever files you want in the archive.</p>
+<p>Yes, you can <code>chmod +x</code> the script if you want.</p>
+<h2>Walkthrough, automated</h2>
+<p>Once the script is set up, all you need to do is:</p>
+<ul>
+<li><code>npm run build</code></li>
+<li><code>npm run deploy</code></li>
+</ul>
+<p>Congratulations, your app is live and up to date.</p>
+<h2>Rollback</h2>
+<p>This script creates a backup upon each release. Should you need to rollback to a previous version, navigate to your project directory, then:</p>
+<ul>
+<li>remove <em>current</em> or rename it to something else,</li>
+<li>pick a backup, and execute <code>tar xfzv backup_name.tar.gz</code>,</li>
+<li>run <code>npm install</code> if need be,</li>
+<li>send any request to your application to trigger the restart.</li>
+</ul>
+<p>Backups take space; you may want to visit your remote project directory every once in a while to delete some of the older backups.</p>
+  </div>
+  <footer style="display: flex; justify-content: space-between;">
+    <a href='/'>← Back to home page</a>
+    <a rel="license noreferrer noopener" href="http://creativecommons.org/licenses/by/4.0/" target="_blank">
+      <img src="/ccby.png" alt="Creative Commons License" />
+    </a>
+  </footer>
+</article>
+
+</main>
+<footer></footer>
+
+</html>

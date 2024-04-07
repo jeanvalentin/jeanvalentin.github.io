@@ -1,0 +1,35 @@
+body {
+  margin: 30px auto;
+  max-width: 650px;
+  color: #444444;
+  padding: 0 10px;
+  font-family: Helvetica, sans-serif;
+  line-height: 1.4em;
+}
+
+a {
+  text-decoration: none;
+  color: #3178b5;
+}
+
+td {
+  padding-right: 1em;
+}
+
+main {
+  border-top: 1px solid #444444;
+  border-bottom: 1px solid #444444;
+  padding: 20px 0;
+  margin: 10px 0;
+}
+
+.markdown code {
+  padding: 0.2em 0.4em;
+  font-size: 90%;
+  background-color: #f4f4f4;
+  border-radius: 4px;
+}
+
+article footer {
+  margin-top: 40px;
+}
